@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getSessionEvents } from "../services/analyticsApi";
 import type { AnalyticsEvent } from "../types/analytics.types";
@@ -8,6 +8,7 @@ import EventTimeline from "../components/sessions/EventTimeline";
 const EVENTS_PER_PAGE = 10;
 
 const SessionDetailsPage = () => {
+  const navigate = useNavigate();
   const { sessionId } = useParams();
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ const SessionDetailsPage = () => {
       if (!sessionId) return;
 
       const response = await getSessionEvents(sessionId);
-
+      
       setEvents(response.data);
     } catch (error) {
       console.error(error);
@@ -74,15 +75,16 @@ const SessionDetailsPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl p-10">
-      <h1 className="mb-8 text-3xl font-bold">
+      <button
+        onClick={() => navigate("/")}
+        className="mb-6 rounded border px-4 py-2 cursor-pointer"
+      >
+        ← Back to Sessions
+      </button>
+
+      <h1 className="mb-5 text-3xl font-bold">
         Session Journey: {sessionId?.slice(0, 8)}
       </h1>
-
-      <div className="mb-8 rounded-lg border p-5 shadow-sm">
-        <p className="mb-2">Total Events: {totalEvents}</p>
-        <p className="mb-2">Clicks: {clickCount}</p>
-        <p>Page Views: {pageViewCount}</p>
-      </div>
 
       <div className="mb-8 flex gap-4">
         <button
@@ -91,7 +93,7 @@ const SessionDetailsPage = () => {
             filter === "all" ? "bg-black text-white" : "border"
           }`}
         >
-          All Events
+          All Events ({totalEvents})
         </button>
 
         <button
@@ -100,7 +102,7 @@ const SessionDetailsPage = () => {
             filter === "click" ? "bg-black text-white" : "border"
           }`}
         >
-          Click Events
+          Click Events ({clickCount})
         </button>
 
         <button
@@ -109,11 +111,11 @@ const SessionDetailsPage = () => {
             filter === "page_view" ? "bg-black text-white" : "border"
           }`}
         >
-          Page Views
+          Page Views ({pageViewCount})
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {paginatedEvents.map((event, index) => (
           <EventTimeline
             key={event._id}
