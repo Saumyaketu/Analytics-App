@@ -75,13 +75,6 @@ const SessionDetailsPage = () => {
 
   return (
     <div className="mx-auto max-w-6xl p-10">
-      <button
-        onClick={() => navigate("/")}
-        className="mb-6 rounded border px-4 py-2 cursor-pointer"
-      >
-        ← Back to Sessions
-      </button>
-
       <h1 className="mb-5 text-3xl font-bold">
         Session Journey: {sessionId?.slice(0, 8)}
       </h1>
