@@ -5,15 +5,15 @@ import {
   getHeatmapData,
 } from "../services/analytics.service.js";
 
-export const trackEvent = async (req, res) => {
+export const trackEvent = async (req, res, next) => {
   try {
     const { sessionId, eventType, pageUrl } = req.body;
 
     if (!sessionId || !eventType || !pageUrl) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing required fields",
-      });
+      const error = new Error("Missing required fields");
+      error.statusCode = 400;
+
+      return next(error);
     }
 
     const event = await createEvent(req.body);
@@ -24,14 +24,11 @@ export const trackEvent = async (req, res) => {
       data: event,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const fetchSessions = async (req, res) => {
+export const fetchSessions = async (req, res, next) => {
   try {
     const sessions = await getAllSessions();
 
@@ -41,14 +38,11 @@ export const fetchSessions = async (req, res) => {
       data: sessions,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const fetchSessionEvents = async (req, res) => {
+export const fetchSessionEvents = async (req, res, next) => {
   try {
     const { sessionId } = req.params;
     const events = await getSessionEvents(sessionId);
@@ -59,21 +53,18 @@ export const fetchSessionEvents = async (req, res) => {
       data: events,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
 
-export const fetchHeatmapData = async (req, res) => {
+export const fetchHeatmapData = async (req, res, next) => {
   try {
     const { page } = req.query;
     if (!page) {
-      return res.status(400).json({
-        success: false,
-        message: "Page URL is required",
-      });
+      const error = new Error("Page URL is required");
+      error.statusCode = 400;
+
+      return next(error);
     }
 
     const clicks = await getHeatmapData(page);
@@ -84,9 +75,6 @@ export const fetchHeatmapData = async (req, res) => {
       data: clicks,
     });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+    next(error);
   }
 };
