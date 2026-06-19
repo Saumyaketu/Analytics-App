@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { getSessionEvents } from "../services/analyticsApi";
 import type { AnalyticsEvent } from "../types/analytics.types";
@@ -8,7 +8,6 @@ import EventTimeline from "../components/sessions/EventTimeline";
 const EVENTS_PER_PAGE = 10;
 
 const SessionDetailsPage = () => {
-  const navigate = useNavigate();
   const { sessionId } = useParams();
   const [events, setEvents] = useState<AnalyticsEvent[]>([]);
   const [loading, setLoading] = useState(true);
