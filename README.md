@@ -219,6 +219,7 @@ Create .env file
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
+FRONTEND_URL=http://localhost:5173
 ```
 
 Run backend
